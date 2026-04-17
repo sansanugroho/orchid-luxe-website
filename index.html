@@ -32,6 +32,14 @@
   }
 
 /* ── LANG ── */
+.id-text { display: none; }
+.en-text { display: inline; }
+body.lang-id .id-text { display: inline; }
+body.lang-id .en-text { display: none; }
+body.lang-id .id-text.block-el { display: block; }
+body.lang-id .en-text.block-el { display: none; }
+
+/* Tombol bahasa */
 .lang-btn { display: flex; gap: 5px; }
 .lang-btn button {
 background: none; border: 1px solid var(–parchment);
@@ -39,11 +47,8 @@ padding: 4px 10px; font-size: 0.67rem; letter-spacing: 0.15em;
 text-transform: uppercase; cursor: pointer; color: var(–text-soft);
 font-family: ‘Jost’, sans-serif; transition: all 0.2s;
 }
-.lang-btn button.active, .lang-btn button:hover {
-background: var(–moss); color: var(–bg); border-color: var(–moss);
-}
-[data-lang=“en”] .id-text { display: none; }
-[data-lang=“id”] .en-text { display: none; }
+.lang-btn button:hover { background: var(–bg-moss); color: var(–moss); }
+.lang-btn button.active { background: var(–moss); color: var(–bg); border-color: var(–moss); }
 
 /* ── NAV ── */
 nav {
@@ -262,13 +267,7 @@ footer { flex-direction: column; text-align: center; padding: 30px 24px; }
 </style>
 
 </head>
-<body data-lang="en">
-<script>
-  function setLang(l) {
-    document.body.setAttribute('data-lang', l);
-    document.querySelectorAll('.lang-btn button').forEach(b => b.classList.toggle('active', b.dataset.l === l));
-  }
-</script>
+<body>
 
 <!-- FLOATING WA -->
 
@@ -292,8 +291,8 @@ footer { flex-direction: column; text-align: center; padding: 30px 24px; }
       @orchidluxebouquets
     </a>
     <div class="lang-btn">
-      <button data-l="en" class="active" onclick="setLang('en')">EN</button>
-      <button data-l="id" onclick="setLang('id')">ID</button>
+      <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+      <button id="btn-id" onclick="setLang('id')">ID</button>
     </div>
   </div>
 </nav>
@@ -318,7 +317,7 @@ footer { flex-direction: column; text-align: center; padding: 30px 24px; }
     </div>
   </div>
   <div class="hero-visual">
-    <img class="main-img" src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=900&q=80" alt="Phalaenopsis Arrangement">
+    <img class="main-img" src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=900&q=80" alt="Phalaenopsis Arrangement">
     <div class="hero-badge">
       <div class="number">500+</div>
       <div class="label"><span class="en-text">Happy Customers</span><span class="id-text">Pelanggan Puas</span></div>
@@ -533,6 +532,18 @@ footer { flex-direction: column; text-align: center; padding: 30px 24px; }
     @orchidluxebouquets
   </a>
 </footer>
+
+<script>
+  function setLang(l) {
+    if (l === 'id') {
+      document.body.classList.add('lang-id');
+    } else {
+      document.body.classList.remove('lang-id');
+    }
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    document.getElementById('btn-id').classList.toggle('active', l === 'id');
+  }
+</script>
 
 </body>
 </html>
