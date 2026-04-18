@@ -355,15 +355,15 @@ display: flex; align-items: center;
   </div>
   <div class="sidebar-menu">
     <div class="menu-section">Konten</div>
-    <a class="menu-item active" href="#" onclick="showPanel('hero',this);return false;"><span class="icon">🏠</span> <span>Hero</span></a>
-    <a class="menu-item" href="#" onclick="showPanel('products',this);return false;"><span class="icon">🌸</span> <span>Produk</span></a>
-    <a class="menu-item" href="#" onclick="showPanel('about',this);return false;"><span class="icon">🌿</span> <span>About</span></a>
-    <a class="menu-item" href="#" onclick="showPanel('testimoni',this);return false;"><span class="icon">💬</span> <span>Testimoni</span></a>
+    <a class="menu-item active" href="#" data-panel="hero"><span class="icon">🏠</span> <span>Hero</span></a>
+    <a class="menu-item" href="#" data-panel="products"><span class="icon">🌸</span> <span>Produk</span></a>
+    <a class="menu-item" href="#" data-panel="about"><span class="icon">🌿</span> <span>About</span></a>
+    <a class="menu-item" href="#" data-panel="testimoni"><span class="icon">💬</span> <span>Testimoni</span></a>
     <div class="menu-section">Pengaturan</div>
-    <a class="menu-item" href="#" onclick="showPanel('settings',this);return false;"><span class="icon">⚙️</span> <span>Kontak</span></a>
+    <a class="menu-item" href="#" data-panel="settings"><span class="icon">⚙️</span> <span>Kontak</span></a>
   </div>
   <div class="sidebar-bottom">
-    <button class="btn-export" onclick="openExportModal()">
+    <button class="btn-export" id="exportBtn">
       ⬇ Export & Download
     </button>
   </div>
@@ -638,8 +638,8 @@ display: flex; align-items: center;
       <li><div class="step-num">5</div><span>Tunggu 30 detik → buka <strong>orchidluxebouquets.netlify.app</strong> ✨</span></li>
     </ol>
     <div class="modal-btns">
-      <button class="btn-download" onclick="doExport()">⬇ Download index.html</button>
-      <button class="btn-cancel" onclick="closeExportModal()">Batal</button>
+      <button class="btn-download">⬇ Download index.html</button>
+      <button class="btn-cancel">Batal</button>
     </div>
   </div>
 </div>
@@ -692,14 +692,37 @@ renderProducts();
 renderTestimonials();
 markUnsaved();
 
-// ── NAVIGATION ──
-function showPanel(name, el) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  if (el) el.classList.add('active');
-  window.scrollTo({top: 0, behavior: 'smooth'});
+// ── NAVIGATION via event delegation (works in all browsers) ──
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.menu-item').forEach(function(m) { m.classList.remove('active'); });
+  var panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Attach click to all menu items via data-panel attribute
+  document.querySelectorAll('.menu-item[data-panel]').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      var panelName = this.getAttribute('data-panel');
+      showPanel(panelName);
+      document.querySelectorAll('.menu-item').forEach(function(m) { m.classList.remove('active'); });
+      this.classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  });
+
+  // Export button
+  var exportBtn = document.getElementById('exportBtn');
+  if (exportBtn) exportBtn.addEventListener('click', openExportModal);
+
+  // Modal buttons
+  var dlBtn = document.querySelector('.btn-download');
+  if (dlBtn) dlBtn.addEventListener('click', doExport);
+  var cancelBtn = document.querySelector('.btn-cancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', closeExportModal);
+});
 
 // ── STATUS ──
 function markUnsaved() {
