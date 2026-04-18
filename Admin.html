@@ -26,6 +26,7 @@ body{font-family:'Jost',sans-serif;font-weight:300;color:var(--text);background:
 .sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;color:rgba(255,255,255,0.85);font-size:0.82rem;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;user-select:none;}
 .sb-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
 .sb-item.on{background:rgba(255,255,255,0.15);color:#fff;border-left-color:var(–blush);}
+a#nav-hero:target-within, a.sb-item:focus{background:rgba(255,255,255,0.12);}
 .sb-item .ic{font-size:1.1rem;width:22px;text-align:center;}
 .sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.1);}
 .btn-exp{width:100%;padding:11px;background:var(–blush);color:var(–moss);border:none;cursor:pointer;font-family:‘Jost’,sans-serif;font-size:0.73rem;letter-spacing:0.16em;text-transform:uppercase;font-weight:500;transition:all 0.2s;}
@@ -45,6 +46,9 @@ body{font-family:'Jost',sans-serif;font-weight:300;color:var(--text);background:
 /* PANELS */
 .panel{display:none;}
 .panel.on{display:block;}
+/* CSS :target fallback - works without JS */
+#p-hero:target,#p-products:target,#p-about:target,#p-testimoni:target,#p-settings:target{display:block;}
+#p-hero:target ~ * .panel, .panel:target ~ .panel{display:none;}
 
 /* CARDS */
 .card{background:#fff;border:1px solid rgba(160,140,110,0.15);margin-bottom:18px;}
@@ -133,12 +137,12 @@ textarea{resize:vertical;min-height:76px;line-height:1.6;}
   </div>
   <div class="sb-nav">
     <div class="sb-sec">Konten</div>
-    <div class="sb-item on" data-target="hero"><span class="ic">🏠</span> Hero</div>
-    <div class="sb-item" data-target="products"><span class="ic">🌸</span> Produk</div>
-    <div class="sb-item" data-target="about"><span class="ic">🌿</span> About</div>
-    <div class="sb-item" data-target="testimoni"><span class="ic">💬</span> Testimoni</div>
+    <a class="sb-item on" href="#" id="nav-hero"><span class="ic">🏠</span> Hero</a>
+    <a class="sb-item" href="#" id="nav-products"><span class="ic">🌸</span> Produk</a>
+    <a class="sb-item" href="#" id="nav-about"><span class="ic">🌿</span> About</a>
+    <a class="sb-item" href="#" id="nav-testimoni"><span class="ic">💬</span> Testimoni</a>
     <div class="sb-sec">Pengaturan</div>
-    <div class="sb-item" data-target="settings"><span class="ic">⚙️</span> Kontak</div>
+    <a class="sb-item" href="#" id="nav-settings"><span class="ic">⚙️</span> Kontak</a>
   </div>
   <div class="sb-foot">
     <button class="btn-exp" id="btnExp">⬇ Export & Download</button>
@@ -324,16 +328,40 @@ var testis = [
 var heroImg = null, abMainImg = null, abAccImg = null;
 
 // ── NAV ──
-var items = document.querySelectorAll('.sb-item[data-target]');
-items.forEach(function(item) {
-  item.addEventListener('click', function() {
-    var t = this.getAttribute('data-target');
-    items.forEach(function(i){ i.classList.remove('on'); });
-    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
-    this.classList.add('on');
-    document.getElementById('p-'+t).classList.add('on');
-    window.scrollTo(0,0);
-  });
+function activatePanel(name) {
+  // Hide all panels
+  var panels = document.querySelectorAll('.panel');
+  for (var i=0; i<panels.length; i++) panels[i].classList.remove('on');
+  // Remove active from all nav items
+  var navItems = document.querySelectorAll('.sb-item');
+  for (var i=0; i<navItems.length; i++) navItems[i].classList.remove('on');
+  // Show target panel
+  var panel = document.getElementById('p-'+name);
+  if (panel) { panel.classList.add('on'); }
+  // Activate nav item
+  var navItem = document.getElementById('nav-'+name);
+  if (navItem) navItem.classList.add('on');
+  // Scroll to top
+  window.scrollTo(0,0);
+}
+
+// Attach to nav items by ID
+var navMap = {
+  'nav-hero': 'hero',
+  'nav-products': 'products', 
+  'nav-about': 'about',
+  'nav-testimoni': 'testimoni',
+  'nav-settings': 'settings'
+};
+
+Object.keys(navMap).forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      activatePanel(navMap[id]);
+    });
+  }
 });
 
 // ── EXPORT MODAL ──
