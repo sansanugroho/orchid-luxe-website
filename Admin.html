@@ -429,10 +429,6 @@ g.querySelectorAll(’.pti’).forEach(function(inp){inp.oninput=function(){prod
 g.querySelectorAll(’.pde’).forEach(function(inp){inp.oninput=function(){prods[parseInt(this.getAttribute(‘data-i’))].de=this.value;};});
 g.querySelectorAll(’.pdi’).forEach(function(inp){inp.oninput=function(){prods[parseInt(this.getAttribute(‘data-i’))].di=this.value;};});
 }
-document.getElementById(‘btnAddProd’).onclick = function() {
-prods.push({te:‘New’,ti:‘Baru’,n:‘Produk Baru’,de:‘Description…’,di:‘Deskripsi…’,p:‘Rp 0’,pd:null,pu:’’});
-renderProds(); showToast(‘Produk ditambahkan!’);
-};
 
 // Testimoni
 function renderTestis() {
@@ -456,17 +452,13 @@ l.querySelectorAll(’.tl2’).forEach(function(inp){inp.oninput=function(){test
 l.querySelectorAll(’.tqe’).forEach(function(inp){inp.oninput=function(){testis[parseInt(this.getAttribute(‘data-i’))].qe=this.value;};});
 l.querySelectorAll(’.tqi’).forEach(function(inp){inp.oninput=function(){testis[parseInt(this.getAttribute(‘data-i’))].qi=this.value;};});
 }
-document.getElementById(‘btnAddTesti’).onclick=function(){testis.push({qe:’“Great!”’,qi:’“Luar biasa!”’,n:‘Nama’,l:‘Kota’});renderTestis();showToast(‘Testimoni ditambahkan!’);};
 
 // Modal
 function openModal(){document.getElementById(‘modal’).className=‘overlay show’;}
 function closeModal(){document.getElementById(‘modal’).className=‘overlay’;}
-document.getElementById(‘btnExp’).onclick=openModal;
-if(document.getElementById(‘btnExpMobile’)) document.getElementById(‘btnExpMobile’).onclick=openModal;
-document.getElementById(‘btnCl’).onclick=closeModal;
 
 // Export
-document.getElementById(‘btnDl’).onclick=function(){
+function doExport(){
 showToast(‘Memproses… ⏳’);
 var wa=document.getElementById(‘waNum’).value;
 var ig=document.getElementById(‘igUser’).value;
@@ -505,13 +497,41 @@ closeModal();
 showToast(‘✅ File berhasil didownload!’);
 })
 .catch(function(){showToast(‘⚠️ admin.html & index.html harus di folder yang sama di GitHub’);closeModal();});
-};
+}
 
 function showToast(msg){var t=document.getElementById(‘toast’);t.textContent=msg;t.className=‘toast show’;setTimeout(function(){t.className=‘toast’;},3000);}
 
-// Init
+// Init - wrap everything in window.onload to ensure DOM is ready
+window.onload = function() {
 renderProds();
 renderTestis();
+
+// Export buttons
+var btnExp = document.getElementById(‘btnExp’);
+if (btnExp) btnExp.addEventListener(‘click’, openModal);
+var btnExpM = document.getElementById(‘btnExpMobile’);
+if (btnExpM) btnExpM.addEventListener(‘click’, openModal);
+var btnCl = document.getElementById(‘btnCl’);
+if (btnCl) btnCl.addEventListener(‘click’, closeModal);
+var btnDl = document.getElementById(‘btnDl’);
+if (btnDl) btnDl.addEventListener(‘click’, doExport);
+
+// Add product
+var btnAddProd = document.getElementById(‘btnAddProd’);
+if (btnAddProd) btnAddProd.addEventListener(‘click’, function() {
+prods.push({te:‘New’,ti:‘Baru’,n:‘Produk Baru’,de:‘Description…’,di:‘Deskripsi…’,p:‘Rp 0’,pd:null,pu:’’});
+renderProds();
+showToast(‘Produk ditambahkan!’);
+});
+
+// Add testi
+var btnAddTesti = document.getElementById(‘btnAddTesti’);
+if (btnAddTesti) btnAddTesti.addEventListener(‘click’, function() {
+testis.push({qe:’“Great!”’,qi:’“Luar biasa!”’,n:‘Nama’,l:‘Kota’});
+renderTestis();
+showToast(‘Testimoni ditambahkan!’);
+});
+};
 </script>
 
 </body>
