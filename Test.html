@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test</title>
+<style>
+body { font-family: sans-serif; padding: 40px; background: #f0ece3; }
+button { padding: 16px 32px; background: #3d5436; color: white; border: none; font-size: 1rem; cursor: pointer; display: block; margin: 20px 0; width: 100%; }
+#result { padding: 20px; background: white; border: 2px solid #3d5436; font-size: 1.1rem; min-height: 60px; }
+</style>
+</head>
+<body>
+
+<h2>Test JavaScript</h2>
+<p>Tap setiap tombol dan lihat apakah hasilnya muncul di kotak bawah:</p>
+
+<button onclick="document.getElementById('result').textContent = 'TEST 1 BERHASIL ✅ - onclick jalan!'">
+  Test 1: onclick langsung
+</button>
+
+<button id="btn2">
+  Test 2: addEventListener
+</button>
+
+<button id="btn3">
+  Test 3: Tambah elemen baru
+</button>
+
+<div id="result">Belum ada yang diklik...</div>
+<div id="list"></div>
+
+<script>
+document.getElementById('btn2').addEventListener('click', function() {
+  document.getElementById('result').textContent = 'TEST 2 BERHASIL ✅ - addEventListener jalan!';
+});
+
+document.getElementById('btn3').addEventListener('click', function() {
+  var div = document.createElement('div');
+  div.style.cssText = 'padding:10px;background:#dde4d8;margin-top:10px;';
+  div.textContent = 'Item baru ditambahkan ✅';
+  document.getElementById('list').appendChild(div);
+  document.getElementById('result').textContent = 'TEST 3 BERHASIL ✅ - createElement jalan!';
+});
+</script>
+
+</body>
+</html>
